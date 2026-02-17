@@ -367,7 +367,7 @@
                         }
 
                         const data = await response.json();
-                        resolve(data.uploadId); // Return uploadId for proxy fetch
+                        resolve(data.url); // Should be the S3 URL
                     } catch (e) {
                         reject(e);
                     }
@@ -402,7 +402,7 @@
                 // 3. Open Design Snapper Upload
                 // If we have a URL, pass it. If not, just open the page.
                 const baseUrl = 'https://www.designsnapper.com/upload';
-                const targetUrl = imageUrl ? `${baseUrl}?uploadId=${encodeURIComponent(imageUrl)}` : baseUrl;
+                const targetUrl = imageUrl ? `${baseUrl}?imageUrl=${encodeURIComponent(imageUrl)}` : baseUrl;
 
                 // If upload failed, copy to clipboard for manual paste
                 if (!imageUrl) {
