@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "strict": true,
+        "module": "commonjs",
+        "skipLibCheck": true,
+        "typeRoots": [
+            "./node_modules/@type",
+            "./node_modules/@figma"
+        ]
+    }
+}

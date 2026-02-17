@@ -1,0 +1,17 @@
+{
+    "name": "design-snapper-plugin",
+    "version": "1.0.0",
+    "description": "Figma Plugin for Design Snapper",
+    "main": "code.js",
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "watch": "tsc -p tsconfig.json --watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@figma/plugin-typings": "*",
+        "typescript": "*"
+    }
+}

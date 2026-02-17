@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        :root {
+            --primary-purple: #8B5CF6;
+            --secondary-purple: #7C3AED;
+            --button-cyan: #22D3EE;
+            --button-cyan-hover: #06B6D4;
+            --text-white: #FFFFFF;
+            --text-subtle: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: linear-gradient(180deg, #8B5CF6 0%, #7C3AED 100%);
+            color: var(--text-white);
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .help-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .help-icon:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content Area */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 24px;
+            position: relative;
+        }
+
+        /* Preview Card */
+        #preview-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        #preview-image {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: #f0f0f0;
+            object-fit: contain;
+            max-height: 260px;
+        }
+
+        .frame-name {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        /* Success State */
+        #success-view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            /* Overlay on gradient */
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #success-view.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .check-circle::before {
+            /* Progress/Spin effect static for now */
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 4px solid white;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+            transform: rotate(-45deg);
+        }
+
+        .success-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .success-desc {
+            font-size: 14px;
+            color: var(--text-subtle);
+            text-align: center;
+            max-width: 260px;
+            line-height: 1.5;
+        }
+
+        /* Empty State */
+        #empty-state {
+            text-align: center;
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        /* Footer / Actions */
+        footer {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            border: none;
+            outline: none;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background-color: var(--button-cyan);
+            color: #1F2937;
+            /* Dark text for contrast */
+            box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--button-cyan-hover);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Design Snapper</h1>
+        <div class="help-icon">
+            <svg width="10" height="14" viewBox="0 0 10 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M4.99998 12.3333C5.18516 12.3333 5.36277 12.2598 5.49372 12.1288C5.62468 11.9979 5.69825 11.8203 5.69825 11.6351C5.69825 11.4499 5.62468 11.2723 5.49372 11.1414C5.36277 11.0104 5.18516 10.9369 4.99998 10.9369C4.8148 10.9369 4.63719 11.0104 4.50623 11.1414C4.37528 11.2723 4.30171 11.4499 4.30171 11.6351C4.30171 11.8203 4.37528 11.9979 4.50623 12.1288C4.63719 12.2598 4.8148 12.3333 4.99998 12.3333ZM4.99998 9.54224C5.77457 9.54224 6.4561 9.22122 6.91689 8.70483C7.37769 8.18844 7.57313 7.53483 7.42658 6.84379C7.28002 6.15275 6.80937 5.51083 6.13063 5.07659C6.01198 5.00331 5.9282 4.9056 5.8679 4.79361C5.79524 4.65399 5.76027 4.50085 5.76027 4.34759C5.76027 4.14509 5.67982 3.95089 5.53664 3.80771C5.39345 3.66453 5.19925 3.58408 4.99675 3.58408C4.79425 3.58408 4.60005 3.66453 4.45686 3.80771C4.31368 3.95089 4.23323 4.14509 4.23323 4.34759H2.83699C2.83699 3.77477 3.06456 3.22541 3.46964 2.82033C3.87472 2.41525 4.42407 2.18768 4.99689 2.18768C5.56971 2.18768 6.11906 2.41525 6.52414 2.82033C6.92923 3.22541 7.15679 3.77477 7.15679 4.34759C7.15679 4.71762 7.2475 5.07345 7.4116 5.39054C7.57569 5.70762 7.80164 5.96895 8.05831 6.14207C8.98188 6.729 9.61904 7.60443 9.8183 8.54472C10.0176 9.48501 9.75239 10.3752 9.12579 11.0776C8.56381 11.7067 7.72898 12.1895 6.76435 12.3023C6.54922 13.0645 5.83689 13.6287 5.00012 13.6287C4.16335 13.6287 3.45102 13.0645 3.23588 12.3023C2.27125 12.1895 1.43643 11.7067 0.874443 11.0776C0.247833 10.3752 -0.0173426 9.48501 0.181926 8.54472C0.381195 7.60443 1.01835 6.729 1.94192 6.14207C2.19859 5.96895 2.42454 5.70762 2.58863 5.39054C2.75273 5.07345 2.84344 4.71762 2.84344 4.34759H4.23977C4.23977 4.54272 4.27962 4.73587 4.35706 4.91574C4.4345 5.09562 4.548 5.2587 4.691 5.39572C4.77663 5.48007 4.88094 5.54848 4.99998 5.59477V9.54224Z"
+                    fill="white" />
+            </svg>
+        </div>
+    </header>
+
+    <main>
+        <!-- Empty State -->
+        <div id="empty-state">
+            <p>Select a frame to get started</p>
+        </div>
+
+        <!-- Preview Card -->
+        <div id="preview-card" class="hidden">
+            <img id="preview-image" src="" alt="Frame Preview" />
+            <div class="frame-name" id="frame-name">Frame Name</div>
+        </div>
+
+        <!-- Success State Overlay -->
+        <div id="success-view">
+            <div class="check-circle">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <div class="success-title">Exported successfully!</div>
+            <div class="success-desc">Export complete! Use Download or drag image to browser.</div>
+        </div>
+    </main>
+
+    <footer>
+        <button id="export-btn" class="btn-primary" disabled>
+            Export & Open
+        </button>
+        <button id="download-btn" class="btn-secondary" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download PNG
+        </button>
+    </footer>
+
+    <script>
+        const previewCard = document.getElementById('preview-card');
+        const previewImg = document.getElementById('preview-image');
+        const frameNameEl = document.getElementById('frame-name');
+        const emptyState = document.getElementById('empty-state');
+        const successView = document.getElementById('success-view');
+
+        const exportBtn = document.getElementById('export-btn');
+        const downloadBtn = document.getElementById('download-btn');
+
+        let currentBlob = null;
+        let currentName = 'export';
+
+        // Supabase Configuration
+        const SUPABASE_PROJECT_ID = 'uiuqamwvscmmrostqdec';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpdXFhbXd2c2NtbXJvc3RxZGVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwOTU0NzAsImV4cCI6MjA4NjY3MTQ3MH0.pDCrGcqopl2YCDWiZZcg-cMkXyvJjGvaZjM-u2YNMfk';
+        const SUPABASE_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co`;
+
+        // --- Interaction Handlers ---
+
+        // Handle messages from plugin (code.ts)
+        window.onmessage = async (event) => {
+            const msg = event.data.pluginMessage;
+
+            if (msg.type === 'preview-image') {
+                // Set Blob from potentially non-typed array
+                const bytes = new Uint8Array(msg.bytes);
+                currentBlob = new Blob([bytes], { type: 'image/png' });
+                currentName = msg.name || 'export';
+
+                // Set UI
+                previewImg.src = URL.createObjectURL(currentBlob);
+                frameNameEl.textContent = currentName;
+
+                // Show Preview, Hide Empty, Hide Success (reset)
+                previewCard.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                successView.classList.remove('visible');
+                previewCard.style.opacity = '1'; // Ensure visible
+
+                // Enable Buttons
+                exportBtn.disabled = false;
+                downloadBtn.disabled = false;
+                exportBtn.textContent = 'Upload & Audit';
+            }
+            else if (msg.type === 'no-selection') {
+                // Reset UI
+                previewCard.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.querySelector('p').textContent = msg.message;
+                successView.classList.remove('visible');
+
+                exportBtn.disabled = true;
+                downloadBtn.disabled = true;
+                currentBlob = null;
+            }
+        };
+
+        async function uploadToBackend(blob) {
+            const url = `${SUPABASE_URL}/functions/v1/make-server-cdc57b20/plugin-upload`;
+
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    try {
+                        const base64data = reader.result;
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ image: base64data })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(await response.text());
+                        }
+
+                        const data = await response.json();
+                        resolve(data.url); // Should be the S3 URL
+                    } catch (e) {
+                        reject(e);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        // Export & Open
+        exportBtn.onclick = async () => {
+            if (!currentBlob) return;
+
+            exportBtn.textContent = 'Uploading...';
+            exportBtn.disabled = true;
+
+            try {
+                // 1. Generate filename
+                const uniqueId = Math.random().toString(36).substring(2, 15);
+                const filename = `${currentName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${uniqueId}.png`;
+
+                // 2. Upload
+                // Note: This relies on the Edge Function being deployed and AWS secrets set.
+                // If it fails, we fall back to manual copy-paste.
+                let imageUrl = null;
+                try {
+                    imageUrl = await uploadToBackend(currentBlob);
+                } catch (e) {
+                    console.warn('Backend upload failed, falling back to manual paste.', e);
+                }
+
+                // 3. Open Design Snapper Upload
+                // If we have a URL, pass it. If not, just open the page.
+                const baseUrl = 'https://www.designsnapper.com/upload';
+                const targetUrl = imageUrl ? `${baseUrl}?imageUrl=${encodeURIComponent(imageUrl)}` : baseUrl;
+
+                // If upload failed, copy to clipboard for manual paste
+                if (!imageUrl) {
+                    await copyBlobToClipboard(currentBlob);
+                    alert('Automatic upload failed. Image copied to clipboard. Please paste (Ctrl+V) on the next screen.');
+                }
+
+                // Use Figma's messaging API to open URL (window.open is blocked in plugin sandbox)
+                parent.postMessage({ pluginMessage: { type: 'open-url', url: targetUrl } }, '*');
+
+                // 4. Show Success State
+                showSuccess();
+                setTimeout(() => {
+                    exportBtn.textContent = 'Upload & Audit';
+                    exportBtn.disabled = false;
+                }, 2000);
+
+            } catch (err) {
+                console.error('Open failed:', err);
+                exportBtn.textContent = 'Failed';
+                exportBtn.disabled = false;
+                alert('Could not open the upload page. Please try again.');
+                setTimeout(() => exportBtn.textContent = 'Upload & Audit', 2000);
+            }
+        };
+
+        // Helper: Copy Blob using Modern API or Fallback
+        async function copyBlobToClipboard(blob) {
+            if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) {
+                try {
+                    const item = new ClipboardItem({ [blob.type]: blob });
+                    await navigator.clipboard.write([item]);
+                    return;
+                } catch (err) {
+                    console.warn('Modern clipboard write failed, trying fallback:', err);
+                }
+            }
+
+            // Fallback: execCommand('copy') with hidden contentEditable
+            return new Promise((resolve, reject) => {
+                try {
+                    const div = document.createElement('div');
+                    div.contentEditable = true;
+                    div.style.position = 'fixed';
+                    div.style.left = '-9999px';
+                    document.body.appendChild(div);
+
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(blob);
+                    div.appendChild(img);
+
+                    // Select the content
+                    const range = document.createRange();
+                    range.selectNodeContents(div);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    const success = document.execCommand('copy');
+
+                    // Cleanup
+                    document.body.removeChild(div);
+                    selection.removeAllRanges();
+
+                    if (success) resolve();
+                    else reject(new Error('execCommand returned false'));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        }
+
+        // Download PNG
+        downloadBtn.onclick = () => {
+            if (!currentBlob) return;
+
+            const url = URL.createObjectURL(currentBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentName}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        function showSuccess() {
+            // Hide preview content slightly or overlay
+            previewCard.style.opacity = '0';
+            successView.classList.add('visible');
+        }
+
+    </script>
+</body>
+
+</html>
