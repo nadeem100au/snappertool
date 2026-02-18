@@ -4,12 +4,13 @@
 <head>
     <style>
         :root {
-            --primary-purple: #8B5CF6;
-            --secondary-purple: #7C3AED;
-            --button-cyan: #22D3EE;
-            --button-cyan-hover: #06B6D4;
-            --text-white: #FFFFFF;
-            --text-subtle: rgba(255, 255, 255, 0.8);
+            --bg-start: #111827;
+            --bg-end: #000000;
+            --button-primary: #FFFFFF;
+            --button-primary-hover: #E5E7EB;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --border-subtle: rgba(255, 255, 255, 0.15);
         }
 
         body {
@@ -19,8 +20,8 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            background: linear-gradient(180deg, #8B5CF6 0%, #7C3AED 100%);
-            color: var(--text-white);
+            background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            color: var(--text-primary);
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -160,7 +161,7 @@
 
         .success-desc {
             font-size: 14px;
-            color: var(--text-subtle);
+            color: var(--text-secondary);
             text-align: center;
             max-width: 260px;
             line-height: 1.5;
@@ -204,20 +205,20 @@
         }
 
         .btn-primary {
-            background-color: var(--button-cyan);
-            color: #1F2937;
+            background-color: var(--button-primary);
+            color: #000000;
             /* Dark text for contrast */
-            box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
         }
 
         .btn-primary:hover {
-            background-color: var(--button-cyan-hover);
+            background-color: var(--button-primary-hover);
         }
 
         .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -225,7 +226,8 @@
         }
 
         .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.25);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         /* Utility */
